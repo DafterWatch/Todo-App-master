@@ -167,14 +167,81 @@ showBottomSheet(
   );
 }
 
+showBottomSheetInfo2(
+    BuildContext context, bool isUpdate, DocumentSnapshot? documentSnapshot) {
+  // Added the isUpdate argument to check if our item has been updated
+  return Padding(
+    padding: const EdgeInsets.all(20.0),
+    /*child: Center(
+      child: Card(
+        child: Column(
+          children: <Widget>[
+            new Text(
+              "Name :",
+              style: TextStyle(fontSize: 18.0),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 8.0),
+            ),
+            Divider(),
+            new Text(
+              "Codebar : ",
+              style: TextStyle(fontSize: 18.0),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 8.0),
+            ),
+            Divider(),
+            new Text(
+              "Description : ",
+              style: TextStyle(fontSize: 18.0),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 8.0),
+            ),
+            Divider(),
+            new Text(
+              "Price : ",
+              style: TextStyle(fontSize: 18.0),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 8.0),
+            ),
+            Divider(),
+            new Text(
+              "Stock : ",
+              style: TextStyle(fontSize: 18.0),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 8.0),
+            ),
+            Divider(),
+            Container(
+              width: 300.0,
+            ),
+          ],
+        ),
+      ),
+    ),*/
+  );
+}
+
 showBottomSheetInfo(
     BuildContext context, bool isUpdate, DocumentSnapshot? documentSnapshot) {
   // Added the isUpdate argument to check if our item has been updated
   return Padding(
     padding: const EdgeInsets.only(top: 20),
-    child: StreamBuilder(
-      stream: db.collection('todos').snapshots(),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
+    child: FutureBuilder<DocumentSnapshot>(
+      future: db.doc('e4EMEoUAQeDVpy12x6bM').get(),
+      builder: ((context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          Map<String, dynamic> data =
+              snapshot.data!.data() as Map<String, dynamic>;
+          return Text('${data.toString()}');
+        }
+        return Text('Loading');
+      }),
+      /*builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (!snapshot.hasData) {
           return const Center(
             child: CircularProgressIndicator(),
@@ -182,54 +249,42 @@ showBottomSheetInfo(
         }
         return ListView.builder(
           itemCount: snapshot.data?.docs.length,
-          itemBuilder: (context, int index) {
+          itemBuilder: (
+            context,
+            int index,
+          ) {
             DocumentSnapshot documentSnapshot = snapshot.data.docs[index];
             idTicket = documentSnapshot.id;
             final docRef = db.collection("todos").doc("e4EMEoUAQeDVpy12x6bM");
-            /*docRef.get().then((doc) {
-              if (doc.exists) {
-                print("Document data: ${doc.data}");
-              } else {
-                print("No such document!");
-              }
-            }).catchError((e) => print(e));*/
-
-            /*docRef.get().then((doc) => {
-              if(doc.id){
-
-              } 
-            });*/
-            var i = 0;
             docRef.get().then(
                   (res) => {
                     res.data()?.forEach((key, value) {
-                      switch (i) {
-                        case 0:
-                          fecha = value;
-                          print(fecha.toString() + ' ' + i.toString());
+                      switch (key.toString()) {
+                        case "fecha":
+                          fecha = value.toString();
+                          print(fecha.toString());
                           break;
-                        case 1:
-                          origen = value;
-                          print(origen.toString() + ' ' + i.toString());
+                        case "origen":
+                          origen = value.toString();
+                          print(origen.toString());
                           break;
-                        case 2:
-                          cliente = value;
-                          print(cliente.toString() + ' ' + i.toString());
+                        case "cliente":
+                          cliente = value.toString();
+                          print(cliente.toString());
                           break;
-                        case 3:
-                          precio = value;
-                          print(precio.toString() + ' ' + i.toString());
+                        case "precio":
+                          precio = value.toString();
+                          print(precio.toString());
                           break;
-                        case 4:
-                          destino = value;
-                          print(destino.toString() + ' ' + i.toString());
+                        case "destino":
+                          destino = value.toString();
+                          print(destino.toString());
                           break;
-                        case 5:
-                          nroboleto = value;
-                          print(nroboleto.toString() + ' ' + i.toString());
+                        case "nroboleto":
+                          nroboleto = value.toString();
+                          print(nroboleto.toString());
                           break;
                       }
-                      i++;
                     })
                   },
                   onError: (e) => print("Error completing: $e"),
@@ -249,7 +304,7 @@ showBottomSheetInfo(
             );
           },
         );
-      },
+      },*/
     ),
   );
 }
