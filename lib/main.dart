@@ -24,7 +24,7 @@ String? nroboleto;
 String? origen;
 String? precio;
 String? idTicket;
-int itemCountL = 0;
+int itemCountAll = 0;
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -51,7 +51,7 @@ class MyHomePage extends StatelessWidget {
           showModalBottomSheet(
             context: context,
             builder: (context) {
-              return showBottomSheet(context, false, null);
+              return showBottomSheetCreate(context, false, null);
             },
           );
         },
@@ -73,6 +73,7 @@ class MyHomePage extends StatelessWidget {
           return ListView.builder(
             itemCount: snapshot.data?.docs.length,
             itemBuilder: (context, int index) {
+              itemCountAll = snapshot.data?.docs.length + 1;
               DocumentSnapshot documentSnapshot = snapshot.data.docs[index];
               idTicket = documentSnapshot.id;
               return ListTile(
@@ -85,8 +86,6 @@ class MyHomePage extends StatelessWidget {
                   showModalBottomSheet(
                     context: context,
                     builder: (BuildContext context) {
-                      itemCountL = snapshot.data?.docs.length + 1;
-                      print(itemCountL);
                       return showBottomSheetInfo(
                           context, true, documentSnapshot);
                     },
@@ -110,7 +109,7 @@ class MyHomePage extends StatelessWidget {
   }
 }
 
-showBottomSheet(
+showBottomSheetCreate(
     BuildContext context, bool isUpdate, DocumentSnapshot? documentSnapshot) {
   // Added the isUpdate argument to check if our item has been updated
   return Padding(
@@ -135,74 +134,82 @@ showBottomSheet(
         ),
         SizedBox(
           width: MediaQuery.of(context).size.width * 0.9,
-          child: TextField(
-            decoration: InputDecoration(
-              border: const OutlineInputBorder(),
-              // Used a ternary operator to check if isUpdate is true then display
-              // Update Todo.
-              labelText: 'Origen',
-              hintText: 'Ingrese el lugar de origen',
+          child: Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: TextField(
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                // Used a ternary operator to check if isUpdate is true then display
+                // Update Todo.
+                labelText: 'Origen',
+                hintText: 'Ingrese el lugar de origen',
+              ),
+              onChanged: (String _val) {
+                // Storing the value of the text entered in the variable value.
+                origen = _val;
+              },
             ),
-            onChanged: (String _val) {
-              // Storing the value of the text entered in the variable value.
-              origen = _val;
-            },
           ),
         ),
         SizedBox(
           width: MediaQuery.of(context).size.width * 0.9,
-          child: TextField(
-            decoration: InputDecoration(
-              border: const OutlineInputBorder(),
-              // Used a ternary operator to check if isUpdate is true then display
-              // Update Todo.
-              labelText: 'Destino',
-              hintText: 'Ingrese el lugar de destino',
+          child: Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: TextField(
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                // Used a ternary operator to check if isUpdate is true then display
+                // Update Todo.
+                labelText: 'Destino ',
+                hintText: 'Ingrese el lugar de destino',
+              ),
+              onChanged: (String _val) {
+                // Storing the value of the text entered in the variable value.
+                destino = _val;
+              },
             ),
-            onChanged: (String _val) {
-              // Storing the value of the text entered in the variable value.
-              destino = _val;
-            },
           ),
         ),
         SizedBox(
           width: MediaQuery.of(context).size.width * 0.9,
-          child: TextField(
-            decoration: InputDecoration(
-              border: const OutlineInputBorder(),
-              // Used a ternary operator to check if isUpdate is true then display
-              // Update Todo.
-              labelText: 'Precio',
-              hintText: 'Ingrese el precio',
+          child: Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: TextField(
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                // Used a ternary operator to check if isUpdate is true then display
+                // Update Todo.
+                labelText: 'Precio',
+                hintText: 'Ingrese el precio',
+              ),
+              onChanged: (String _val) {
+                // Storing the value of the text entered in the variable value.
+                precio = _val;
+              },
             ),
-            onChanged: (String _val) {
-              // Storing the value of the text entered in the variable value.
-              precio = _val;
-            },
           ),
         ),
-        TextButton(
-            style: ButtonStyle(
-              backgroundColor:
-                  MaterialStateProperty.all(Colors.lightBlueAccent),
-            ),
-            onPressed: () {
-              db.collection('todos').add({
-                'nroboleto': itemCountL,
-                'cliente': 'Jose',
-                'fecha': fecha,
-                'origen': origen,
-                'destino': destino,
-                'precio': int.parse(precio!)
-              });
-              Navigator.pop(context);
-            },
-            child: isUpdate
-                ? const Text(
-                    'UPDATE',
-                    style: TextStyle(color: Colors.white),
-                  )
-                : const Text('ADD', style: TextStyle(color: Colors.white))),
+        Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: TextButton(
+              style: ButtonStyle(
+                backgroundColor:
+                    MaterialStateProperty.all(Colors.lightBlueAccent),
+              ),
+              onPressed: () {
+                db.collection('todos').add({
+                  'nroboleto': itemCountAll,
+                  'cliente': 'Jose',
+                  'fecha': fecha,
+                  'origen': origen,
+                  'destino': destino,
+                  'precio': int.parse(precio!)
+                });
+                Navigator.pop(context);
+              },
+              child: const Text('Crear Boleto',
+                  style: TextStyle(color: Colors.white))),
+        ),
       ],
     ),
   );
@@ -215,14 +222,14 @@ showBottomSheetInfo(
     padding: const EdgeInsets.only(top: 20),
     child: FutureBuilder<DocumentSnapshot>(
       builder: ((context, snapshot) {
-        print(documentSnapshot!['nroboleto']);
+        //print(documentSnapshot!['nroboleto']);
         return Center(
           child: Card(
             child: Column(
               children: <Widget>[
                 // ignore: unnecessary_new
                 new Text(
-                  "Nro Boleto: " + documentSnapshot['nroboleto'].toString(),
+                  "Nro Boleto: " + documentSnapshot!['nroboleto'].toString(),
                   style: const TextStyle(fontSize: 18.0),
                 ),
                 // ignore: prefer_const_constructors
